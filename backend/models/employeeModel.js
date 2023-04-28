@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const timesheetSchema = new mongoose.Schema({
   date: {
-    type: Date,
+    type: String,
     required: true,
   },
   timeIn: {
-    type: String,
-    required: true,
+    type: Date,
+    default: null,
   },
   timeOut: {
-    type: String,
+    type: Date,
     default: null,
   },
 });
@@ -19,84 +19,70 @@ const scheduleSchema = new mongoose.Schema({
   Sunday: {
     In: {
       type: String,
-      required: true,
       default: "9:00 AM",
     },
     Out: {
       type: String,
-      required: true,
       default: "9:00 PM",
     },
   },
   Monday: {
     In: {
       type: String,
-      required: true,
       default: "9:00 AM",
     },
     Out: {
       type: String,
-      required: true,
       default: "9:00 PM",
     },
   },
   Tuesday: {
     In: {
       type: String,
-      required: true,
       default: "9:00 AM",
     },
     Out: {
       type: String,
-      required: true,
       default: "9:00 PM",
     },
   },
   Wednesday: {
     In: {
       type: String,
-      required: true,
       default: "9:00 AM",
     },
     Out: {
       type: String,
-      required: true,
       default: "9:00 PM",
     },
   },
   Thursday: {
     In: {
       type: String,
-      required: false,
       default: "9:00 AM",
     },
     Out: {
       type: String,
-      required: false,
       default: "9:00 PM",
     },
   },
   Friday: {
     In: {
       type: String,
-      required: true,
       default: "9:00 AM",
     },
     Out: {
       type: String,
-      required: true,
       default: "9:00 PM",
     },
   },
   Saturday: {
     In: {
       type: String,
-      required: true,
       default: "9:00 AM",
     },
     Out: {
       type: String,
-      required: true,
       default: "9:00 PM",
     },
   },
@@ -161,5 +147,6 @@ const employeeSchema = new mongoose.Schema({
 });
 
 const Employee = mongoose.model("Employee", employeeSchema);
+const Timesheet = mongoose.model("Timesheet", timesheetSchema);
 
-module.exports = Employee;
+module.exports = { Employee, Timesheet };
