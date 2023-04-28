@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const Employee = require("../models/employeeModel");
+const { Employee } = require("../models/employeeModel");
 
 // @desc Register User
 // @route POST api/users

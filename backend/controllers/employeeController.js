@@ -1,8 +1,11 @@
 const asyncHandler = require("express-async-handler");
 
 const { Employee, Timesheet } = require("../models/employeeModel");
+const { Leave } = require("../models/leavesModel");
 
-// Get timesheet for the current employee
+// @desc Get timesheet for the current employee
+// @route GET api/employees/me/timesheet
+// @access Private
 const getMyTimesheet = asyncHandler(async (req, res) => {
   const employee = await Employee.findOne({ user: req.user._id });
   if (!employee) {
@@ -13,7 +16,9 @@ const getMyTimesheet = asyncHandler(async (req, res) => {
   res.status(200).json(timesheet);
 });
 
-// Get schedule for current employee
+// @desc Get schedule for the current employee
+// @route GET api/employees/me/schedule
+// @access Private
 const getMySchedule = asyncHandler(async (req, res) => {
   // Find the employee by user ID
   const employee = await Employee.findOne({ user: req.user._id });
@@ -26,7 +31,9 @@ const getMySchedule = asyncHandler(async (req, res) => {
   res.status(200).json(employee.currentSchedule);
 });
 
-// Get timesheet for any employee
+// @desc Get timesheet for the any employee
+// @route GET api/employees/:id/timesheet
+// @access Private
 const getEmployeeTimesheet = asyncHandler(async (req, res) => {
   // Check if user is an HR user
 
@@ -46,7 +53,9 @@ const getEmployeeTimesheet = asyncHandler(async (req, res) => {
   res.status(200).json(employee.timesheet);
 });
 
-// Get schedule for any employee
+// @desc Get schedule for the any employee
+// @route GET api/employees/:id/schedule
+// @access Private
 const getEmployeeSchedule = asyncHandler(async (req, res) => {
   // Check if user is an HR user
   if (req.user.role !== "hr") {
@@ -65,7 +74,9 @@ const getEmployeeSchedule = asyncHandler(async (req, res) => {
   res.status(200).json(employee.currentSchedule);
 });
 
-// Update employee details
+// @desc Update employee details
+// @route PUT api/employees/:id
+// @access Private
 const updateEmployeeDetails = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const updateFields = req.body;
@@ -89,6 +100,9 @@ const updateEmployeeDetails = asyncHandler(async (req, res) => {
   res.status(200).json(employee);
 });
 
+// @desc Update employee schedule
+// @route PUT api/employees/:id/schedule
+// @access Private
 const updateSchedule = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const updatedSchedule = req.body;
@@ -110,15 +124,15 @@ const updateSchedule = asyncHandler(async (req, res) => {
   employee.currentSchedule = updatedSchedule;
   await employee.save();
 
-  res
-    .status(200)
-    .json({
-      message: "Schedule updated successfully",
-      currentSchedule: employee.currentSchedule,
-    });
+  res.status(200).json({
+    message: "Schedule updated successfully",
+    currentSchedule: employee.currentSchedule,
+  });
 });
 
-// Get employee list
+// @desc Update employee schedule
+// @route GET api/employees/
+// @access Private
 const getEmployeeList = asyncHandler(async (req, res) => {
   if (req.user.role !== "admin" && req.user.role !== "hr") {
     res.status(403);
@@ -130,8 +144,9 @@ const getEmployeeList = asyncHandler(async (req, res) => {
   res.status(200).json(employees);
 });
 
-// Clock in/out
-
+// @desc Clock in or Out
+// @route POST api/employees/clock
+// @access Private
 const clockInOut = asyncHandler(async (req, res) => {
   const employee = await Employee.findOne({ user: req.user._id });
   if (!employee) {
@@ -171,6 +186,47 @@ const clockInOut = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Add a leave
+// @route POST api/employees/me/leaves
+// @access Private
+const addLeave = asyncHandler(async (req, res) => {
+  const { type, date, replacedBy } = req.body;
+  const employee = await Employee.findOne({ user: req.user._id });
+  if (!employee) {
+    res.status(400);
+    throw new Error("Employee not found");
+  }
+
+  if (!type || !date || !replacedBy) {
+    res.status(400);
+    throw new Error("Please provide all fields");
+  }
+
+  let leaveUsed = 0;
+  if (type === "Vacation") {
+    leaveUsed = 1;
+    employee.vacationLeavesUsed += 1;
+  } else if (type === "Sick") {
+    leaveUsed = 1;
+    employee.sickLeavesUsed += 1;
+  }
+
+  const leave = {
+    // Modify this line
+    type,
+    date,
+    replacedBy,
+  };
+
+  employee.leaves.push(leave);
+  await employee.save();
+
+  res.status(200).json({
+    message: "Leave added successfully",
+    leave,
+  });
+});
+
 module.exports = {
   getMyTimesheet,
   getMySchedule,
@@ -180,4 +236,5 @@ module.exports = {
   updateSchedule,
   getEmployeeList,
   clockInOut,
+  addLeave,
 };
