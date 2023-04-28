@@ -24,7 +24,7 @@ const getEmployeeTimesheet = asyncHandler(async (req, res) => {
   }
 
   //Check if user is authorized
-  if (req.user.role !== "admin" || req.user.role !== "hr") {
+  if (req.user.role !== "admin" && req.user.role !== "hr") {
     res.status(403);
     throw new Error("User not authorized");
   }
@@ -51,7 +51,7 @@ const createEmployee = asyncHandler(async (req, res) => {
   const { _id: userId } = req.user;
 
   //Check if user is authorized
-  if (req.user.role !== "admin" || req.user.role !== "hr") {
+  if (req.user.role !== "admin" && req.user.role !== "hr") {
     res.status(403);
     throw new Error("User not authorized");
   }
@@ -97,64 +97,48 @@ const createEmployee = asyncHandler(async (req, res) => {
   res.status(201).json(newEmployee);
 });
 
-const updateTimesheet = asyncHandler(async (req, res) => {
+// Update employee details
+const updateEmployeeDetails = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { timeIn, timeOut } = req.body;
-
-  // Find the employee by ID
-  const employee = await Employee.findOne({ _id: id, user: req.user._id });
-
-  // If employee is not found, send 400 error
-  if (!employee) {
-    res.status(400);
-    throw new Error("Employee not found");
-  }
-
-  // Create a new timesheet entry
-  const newEntry = {
-    date: new Date(),
-    timeIn,
-    timeOut,
-  };
-
-  // Add the new entry to the timesheet array
-  employee.timesheet.push(newEntry);
-
-  // Save the updated employee document to the database
-  await employee.save();
-
-  res.status(200).json(employee);
-});
-
-// Update employee schedule
-
-const updateSchedule = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const { currentSchedule } = req.body;
-
-  //Check if user is authorized
-  if (req.user.role !== "admin" || req.user.role !== "hr") {
-    res.status(403);
-    throw new Error("User not authorized");
-  }
+  const updateFields = req.body;
 
   // Get the employee associated with the currently authenticated user
   const employee = await Employee.findOne({ _id: id, user: req.user._id });
 
   if (!employee) {
-    res.status(400);
-    throw new Error("Employee not found");
+    res.status(404).json({ message: "Employee not found" });
+    return;
   }
 
-  employee.currentSchedule = currentSchedule;
+  //Check if current user is authorized
+  if (req.user.role !== "admin" && req.user.role !== "hr") {
+    res.status(403);
+    throw new Error("User not authorized");
+  }
+
+  Object.assign(employee, updateFields);
   await employee.save();
   res.status(200).json(employee);
 });
+
+// Get employee list
+const getEmployeeList = asyncHandler(async (req, res) => {
+  if (req.user.role !== "admin" && req.user.role !== "hr") {
+    res.status(403);
+    throw new Error("User not authorized");
+  }
+
+  const employees = await Employee.find().populate("user", "name email");
+
+  res.status(200).json(employees);
+});
+
+// Clock
 
 module.exports = {
   getMyTimesheet,
   getEmployeeTimesheet,
   createEmployee,
-  updateTimesheet,
-  updateSchedule,
+  updateEmployeeDetails,
+  getEmployeeList,
 };

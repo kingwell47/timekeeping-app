@@ -4,15 +4,16 @@ const router = express.Router();
 const {
   getMyTimesheet,
   getEmployeeTimesheet,
-  createEmployee,
-  updateTimesheet,
-  updateSchedule,
+  updateEmployeeDetails,
+
+  getEmployeeList,
 } = require("../controllers/employeeController");
 
 const { protect } = require("../middleware/authMiddleware");
 
-router.route("/").post(createEmployee);
-router.route("/me").get(protect, getMyTimesheet);
-router.route("/:id").put(updateTimesheet).get(getEmployeeTimesheet);
+router.route("/").get(protect, getEmployeeList);
+router.route("/me/timesheet").get(protect, getMyTimesheet);
+router.route("/:id").put(protect, updateEmployeeDetails);
+router.route("/:id/timesheet").get(getEmployeeTimesheet);
 
 module.exports = router;
