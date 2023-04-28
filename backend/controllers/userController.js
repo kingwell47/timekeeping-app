@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+const Employee = require("../models/employeeModel");
 
 // @desc Register User
 // @route POST api/users
@@ -29,11 +30,27 @@ const registerUser = asyncHandler(async (req, res) => {
   // Create user
   const user = await User.create({ name, email, password: hashedPassword });
 
+  // Create employee
+
+  const newEmployee = new Employee({
+    user: user._id,
+    name: user.name,
+    position: "employee",
+    currentSchedule: {},
+    totalVacationLeaves: 7,
+    vacationLeavesUsed: 0,
+    totalSickLeaves: 7,
+    sickLeavesUsed: 0,
+    timesheet: [],
+  });
+  await newEmployee.save();
+
   if (user) {
     res.status(201).json({
       _id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
       token: generaToken(user._id),
     });
   } else {
@@ -56,6 +73,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
       token: generaToken(user._id),
     });
   } else {
@@ -68,12 +86,13 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route GET api/users/me
 // @access Private
 const getMe = asyncHandler(async (req, res) => {
-  const { _id, name, email } = await User.findById(req.user.id);
+  const { _id, name, email, role } = await User.findById(req.user.id);
 
   res.status(200).json({
     id: _id,
     name,
     email,
+    role,
   });
 });
 
