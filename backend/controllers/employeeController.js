@@ -227,6 +227,24 @@ const addLeave = asyncHandler(async (req, res) => {
   });
 });
 
+const getEmployeeClockedInStatus = asyncHandler(async (req, res) => {
+  const employee = await Employee.findOne({ user: req.user._id });
+  if (!employee) {
+    throw new Error("Employee not found");
+  }
+
+  const currentDate = new Date().toISOString().slice(0, 10);
+  const timesheet = employee.timesheet.find((ts) => ts.date === currentDate);
+
+  const clockedInStatus = !!(
+    timesheet &&
+    timesheet.timeIn &&
+    !timesheet.timeOut
+  );
+
+  res.status(200).json({ clockedIn: clockedInStatus });
+});
+
 module.exports = {
   getMyTimesheet,
   getMySchedule,
@@ -237,4 +255,5 @@ module.exports = {
   getEmployeeList,
   clockInOut,
   addLeave,
+  getEmployeeClockedInStatus,
 };

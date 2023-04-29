@@ -12,6 +12,7 @@ const {
   getEmployeeList,
   clockInOut,
   addLeave,
+  getEmployeeClockedInStatus,
 } = require("../controllers/employeeController");
 
 // Importing the protect middleware from the authMiddleware module
@@ -22,7 +23,10 @@ router.route("/").get(protect, getEmployeeList);
 router.route("/me/timesheet").get(protect, getMyTimesheet);
 router.route("/me/schedule").get(protect, getMySchedule);
 router.route("/me/leaves").post(protect, addLeave);
-router.route("/clock").post(protect, clockInOut);
+router
+  .route("/clock")
+  .post(protect, clockInOut)
+  .get(protect, getEmployeeClockedInStatus);
 router.route("/:id").put(protect, updateEmployeeDetails);
 router.route("/:id/timesheet").get(protect, getEmployeeTimesheet);
 router

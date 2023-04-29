@@ -261,6 +261,19 @@ Request body (Raw JSON):
 { message: "You are already clocked in. Please clock out before attempting to clock in again."}
 ```
 
+## Check if currently clocked in
+
+- **Description**: Check if current employee logged in is clocked in
+- **Route**: `GET api/employees/clock`
+- **Access**: Private
+
+```perl
+Response body
+{
+    "clockedIn": true
+}
+```
+
 ## Add a leave
 
 - **Description**: Add a leave
