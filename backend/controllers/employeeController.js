@@ -53,7 +53,7 @@ const getEmployeeTimesheet = asyncHandler(async (req, res) => {
   res.status(200).json(employee.timesheet);
 });
 
-// @desc Get schedule for the any employee
+// @desc Get schedule for any employee
 // @route GET api/employees/:id/schedule
 // @access Private
 const getEmployeeSchedule = asyncHandler(async (req, res) => {
@@ -130,7 +130,7 @@ const updateSchedule = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc Update employee schedule
+// @desc Get employee list
 // @route GET api/employees/
 // @access Private
 const getEmployeeList = asyncHandler(async (req, res) => {
