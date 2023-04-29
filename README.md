@@ -6,8 +6,8 @@ Timekeeping app for the MMS 149 Final Project
 
 - NODE_ENV = development
 - PORT = 5000
-- MONGO_URI = `javascript //Provide your own access to MongoDB`
-- JWT_SECRET = `javascript // Any String `
+- MONGO_URI = `//Provide your own access to MongoDB`
+- JWT_SECRET = `// Any String`
 
 # API Routes
 
