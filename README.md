@@ -4,10 +4,10 @@ Timekeeping app for the MMS 149 Final Project
 
 ## .env file needed with the following:
 
-NODE_ENV = development
-PORT = 5000
-MONGO_URI = //Provide your own access to MongoDB
-JWT_SECRET = // Any String
+- NODE_ENV = development
+- PORT = 5000
+- MONGO_URI = `javascript //Provide your own access to MongoDB`
+- JWT_SECRET = `javascript // Any String `
 
 # API Routes
 
