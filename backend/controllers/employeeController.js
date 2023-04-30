@@ -139,7 +139,9 @@ const getEmployeeList = asyncHandler(async (req, res) => {
     throw new Error("User not authorized");
   }
 
-  const employees = await Employee.find().populate("user", "name email");
+  const employees = await Employee.find()
+    .populate("user", "name email")
+    .select("_id name currentSchedule vacationLeavesUsed sickLeavesUsed");
 
   res.status(200).json(employees);
 });
@@ -212,7 +214,6 @@ const addLeave = asyncHandler(async (req, res) => {
   }
 
   const leave = {
-    // Modify this line
     type,
     date,
     replacedBy,

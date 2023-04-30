@@ -177,6 +177,11 @@ Request body (Raw JSON):
   "data": [
     {
       "_id": "1234567890",
+      "user": {
+            "_id": "644b43bb3fa",
+            "name": "John Doe",
+            "email": "employee@email.com"
+        },
       "name": "John Doe",
       "position": "Developer",
       "currentSchedule": {
@@ -209,39 +214,8 @@ Request body (Raw JSON):
           "Out": "5:00 PM"
         }
       },
-      "totalVacationLeaves": 7,
       "vacationLeavesUsed": 2,
-      "remainingVacationLeaves": 5,
-      "totalSickLeaves": 7,
       "sickLeavesUsed": 1,
-      "remainingSickLeaves": 6,
-      "timesheet": [
-        {
-          "date": "2023-04-01T00:00:00.000Z",
-          "timeIn": "2023-04-01T08:30:00.000Z",
-          "timeOut": "2023-04-01T17:00:00.000Z"
-        },
-        {
-          "date": "2023-04-02T00:00:00.000Z",
-          "timeIn": "2023-04-02T08:30:00.000Z",
-          "timeOut": "2023-04-02T17:00:00.000Z"
-        }
-      ],
-      "leaves": [
-        {
-          "_id": "0987654321",
-          "date": "2023-05-01T00:00:00.000Z",
-          "type": "Vacation",
-          "employeeReplaced": "Jane Doe"
-        }
-      ],
-      "overtime": [
-        {
-          "_id": "2468013579",
-          "date": "2023-04-15T00:00:00.000Z",
-          "hours": 3
-        }
-      ]
     }
   ]
 }

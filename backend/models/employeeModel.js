@@ -147,12 +147,6 @@ const employeeSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
-  remainingVacationLeaves: {
-    type: Number,
-    default: function () {
-      return this.totalVacationLeaves - this.vacationLeavesUsed;
-    },
-  },
   totalSickLeaves: {
     type: Number,
     required: true,
@@ -163,19 +157,13 @@ const employeeSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
-  remainingSickLeaves: {
-    type: Number,
-    default: function () {
-      return this.totalVacationLeaves - this.vacationLeavesUsed;
-    },
-  },
   timesheet: {
     type: [timesheetSchema],
     required: true,
     default: [],
   },
   leaves: {
-    type: [leaveSchema], // Modify this line
+    type: [leaveSchema],
     required: true,
     default: [],
   },
