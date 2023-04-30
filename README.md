@@ -275,3 +275,103 @@ Response (Success):
 
 
 ```
+
+## Get overtime array
+
+- **Description**: Get overtime array
+- **Route**: `GET api/employees/me/overtime`
+- **Access**: Private
+
+```perl
+{
+  "overtime": [
+    {
+      "_id": "614a93b4f80f051d6c0faa7a",
+      "date": "2022-01-01",
+      "hours": 2,
+      "nightHours": 1,
+      "timeIn": "18:00",
+      "timeOut": "20:00",
+      "reason": "Project deadline",
+      "createdAt": "2021-09-21T10:35:40.651Z",
+      "updatedAt": "2021-09-21T10:35:40.651Z"
+    },
+    {
+      "_id": "614a93c6f80f051d6c0faa7b",
+      "date": "2022-02-14",
+      "hours": 3,
+      "nightHours": 2,
+      "timeIn": "22:00",
+      "timeOut": "01:00",
+      "reason": "Client meeting",
+      "createdAt": "2021-09-21T10:36:06.975Z",
+      "updatedAt": "2021-09-21T10:36:06.975Z"
+    }
+  ]
+}
+
+```
+
+## Get leaves array
+
+- **Description**: Get leaves array
+- **Route**: `GET api/employees/me/leaves`
+- **Access**: Private
+
+```perl
+{
+  "leaves": [
+    {
+      "_id": "614a9349f80f051d6c0faa77",
+      "type": "Vacation",
+      "date": "2022-01-01",
+      "replacedBy": "John Doe",
+      "createdAt": "2021-09-21T10:34:17.787Z",
+      "updatedAt": "2021-09-21T10:34:17.787Z"
+    },
+    {
+      "_id": "614a9370f80f051d6c0faa78",
+      "type": "Sick",
+      "date": "2022-02-14",
+      "replacedBy": "Jane Smith",
+      "createdAt": "2021-09-21T10:34:48.772Z",
+      "updatedAt": "2021-09-21T10:34:48.772Z"
+    }
+  ]
+}
+
+```
+
+## Add overtime
+
+- **Description**: Add overtime
+- **Route**: `POST api/employees/me/overtime`
+- **Access**: Private
+
+```perl
+Request Body:
+{
+        "date": "2023-05-05",
+        "hours": 12,
+        "nightHours": 5,
+        "timeIn": "9 PM",
+        "timeOut": "9 AM",
+        "reason": "additional stuff"
+
+}
+
+Response:
+{
+    "message": "Overtime added successfully",
+    {
+        "date": "2023-05-05",
+        "hours": 12,
+        "nightHours": 5,
+        "timeIn": "9 PM",
+        "timeOut": "9 AM",
+        "reason": "additional stuff"
+    },
+
+}
+
+```

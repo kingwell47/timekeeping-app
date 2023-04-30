@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 
 const { Employee, Timesheet } = require("../models/employeeModel");
-const { Leave } = require("../models/leavesModel");
 
 // @desc Get timesheet for the current employee
 // @route GET api/employees/me/timesheet
@@ -228,6 +227,9 @@ const addLeave = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc Get Employee Clocked in Status
+// @route GET api/employees/clock
+// @access Private
 const getEmployeeClockedInStatus = asyncHandler(async (req, res) => {
   const employee = await Employee.findOne({ user: req.user._id });
   if (!employee) {
@@ -246,6 +248,74 @@ const getEmployeeClockedInStatus = asyncHandler(async (req, res) => {
   res.status(200).json({ clockedIn: clockedInStatus });
 });
 
+// @desc Add overtime
+// @route POST api/employees/me/overtime
+// @access Private
+const addOvertime = asyncHandler(async (req, res) => {
+  const { date, hours, nightHours, timeIn, timeOut, reason } = req.body;
+
+  const employee = await Employee.findOne({ user: req.user._id });
+
+  if (!employee) {
+    res.status(400);
+    throw new Error("Employee not found");
+  }
+
+  if (!date || !hours || !nightHours || !timeIn || !timeOut || !reason) {
+    res.status(400);
+    throw new Error("Please provide all fields");
+  }
+
+  const overtime = {
+    date,
+    hours,
+    nightHours,
+    timeIn,
+    timeOut,
+    reason,
+  };
+
+  employee.overtime.push(overtime);
+  await employee.save();
+
+  res.status(200).json({
+    message: "Overtime added successfully",
+    overtime,
+  });
+});
+
+// @desc get leaves array
+// @route GET api/employees/me/leaves
+// @access Private
+const getLeaves = asyncHandler(async (req, res) => {
+  const employee = await Employee.findOne({ user: req.user._id }).populate(
+    "leaves"
+  );
+
+  if (!employee) {
+    res.status(400);
+    throw new Error("Employee not found");
+  }
+
+  res.status(200).json(employee.leaves);
+});
+
+// @desc get overtime array
+// @route GET api/employees/me/overtime
+// @access Private
+const getOvertime = asyncHandler(async (req, res) => {
+  const employee = await Employee.findOne({ user: req.user._id }).populate(
+    "overtime"
+  );
+
+  if (!employee) {
+    res.status(400);
+    throw new Error("Employee not found");
+  }
+
+  res.status(200).json(employee.overtime);
+});
+
 module.exports = {
   getMyTimesheet,
   getMySchedule,
@@ -256,5 +326,8 @@ module.exports = {
   getEmployeeList,
   clockInOut,
   addLeave,
+  getLeaves,
+  addOvertime,
+  getOvertime,
   getEmployeeClockedInStatus,
 };

@@ -1,34 +1,57 @@
 const mongoose = require("mongoose");
 
-const leaveSchema = new mongoose.Schema({
-  date: {
-    type: String,
-    required: true,
+const leaveSchema = new mongoose.Schema(
+  {
+    date: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      enum: ["Vacation", "Sick"],
+      required: true,
+    },
+    replacedBy: {
+      type: String,
+      required: true,
+    },
   },
-  type: {
-    type: String,
-    enum: ["Vacation", "Sick"],
-    required: true,
-  },
-  replacedBy: {
-    type: String,
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
-const overtimeSchema = new mongoose.Schema({
-  date: {
-    type: Date,
-    required: true,
+const overtimeSchema = new mongoose.Schema(
+  {
+    date: {
+      type: String,
+      required: true,
+    },
+    hours: {
+      type: Number,
+      required: true,
+    },
+    nightHours: {
+      type: Number,
+      required: true,
+    },
+    timeIn: {
+      type: String,
+      required: true,
+    },
+    timeOut: {
+      type: String,
+      required: true,
+    },
+    reason: {
+      type: String,
+      required: true,
+    },
   },
-  hours: {
-    type: Number,
-    required: true,
-  },
-  reason: {
-    type: String,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 const timesheetSchema = new mongoose.Schema({
   date: {

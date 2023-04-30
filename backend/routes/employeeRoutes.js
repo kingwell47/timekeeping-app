@@ -12,6 +12,9 @@ const {
   getEmployeeList,
   clockInOut,
   addLeave,
+  getLeaves,
+  addOvertime,
+  getOvertime,
   getEmployeeClockedInStatus,
 } = require("../controllers/employeeController");
 
@@ -22,7 +25,11 @@ const { protect } = require("../middleware/authMiddleware");
 router.route("/").get(protect, getEmployeeList);
 router.route("/me/timesheet").get(protect, getMyTimesheet);
 router.route("/me/schedule").get(protect, getMySchedule);
-router.route("/me/leaves").post(protect, addLeave);
+router.route("/me/leaves").post(protect, addLeave).get(protect, getLeaves);
+router
+  .route("/me/overtime")
+  .post(protect, addOvertime)
+  .get(protect, getOvertime);
 router
   .route("/clock")
   .post(protect, clockInOut)
