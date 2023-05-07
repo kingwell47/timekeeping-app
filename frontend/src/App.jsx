@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import { Box } from "@mui/material";
+import { Container } from "@mui/material";
 
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -11,13 +11,13 @@ function App() {
   return (
     <>
       <Router>
-        <Box>
+        <Container>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
-        </Box>
+        </Container>
       </Router>
     </>
   );

@@ -18,3 +18,36 @@ export const registerUser = (userData) => async (dispatch) => {
     dispatch({ type: "REGISTER_FAIL", payload: errorMessage });
   }
 };
+
+export const loginUser = (userData) => async (dispatch) => {
+  try {
+    dispatch({ type: "USER_LOGIN_REQUEST" });
+
+    const config = {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    };
+
+    const params = new URLSearchParams(userData);
+
+    const response = await axios.post(
+      `${API_URL}/api/users/login`,
+      params,
+      config
+    );
+
+    dispatch({ type: "USER_LOGIN_SUCCESS", payload: response.data });
+
+    // Save token to local storage
+    localStorage.setItem("authToken", response.data.token);
+  } catch (error) {
+    dispatch({
+      type: "USER_LOGIN_FAIL",
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
