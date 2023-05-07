@@ -244,7 +244,8 @@ Request body (Raw JSON):
 ```perl
 Response body
 {
-    "clockedIn": true
+    "clockedIn": true,
+    "timeIn": "2022-06-10T09:00:00.000Z"
 }
 ```
 

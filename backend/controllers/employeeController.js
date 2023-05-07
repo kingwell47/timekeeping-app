@@ -245,7 +245,9 @@ const getEmployeeClockedInStatus = asyncHandler(async (req, res) => {
     !timesheet.timeOut
   );
 
-  res.status(200).json({ clockedIn: clockedInStatus });
+  res
+    .status(200)
+    .json({ clockedIn: clockedInStatus, timeIn: timesheet.timeIn });
 });
 
 // @desc Add overtime
