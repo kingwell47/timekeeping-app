@@ -318,6 +318,38 @@ const getOvertime = asyncHandler(async (req, res) => {
   res.status(200).json(employee.overtime);
 });
 
+// @desc get current employee data
+// @route GET api/employees/me/
+// @access Private
+const getEmployeeData = asyncHandler(async (req, res) => {
+  const employee = await Employee.findOne({ user: req.user._id })
+    .populate({
+      path: "leaves",
+      options: { sort: { date: -1 } },
+    })
+    .populate({
+      path: "overtime",
+      options: { sort: { date: -1 } },
+    });
+
+  if (!employee) {
+    res.status(400);
+    throw new Error("Employee not found");
+  }
+
+  const { name, position, currentSchedule, leaves, overtime, timesheet } =
+    employee;
+
+  res.status(200).json({
+    name,
+    position,
+    currentSchedule,
+    leaves,
+    overtime,
+    timesheet,
+  });
+});
+
 module.exports = {
   getMyTimesheet,
   getMySchedule,
@@ -332,4 +364,5 @@ module.exports = {
   addOvertime,
   getOvertime,
   getEmployeeClockedInStatus,
+  getEmployeeData,
 };

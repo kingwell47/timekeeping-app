@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   TextField,
   Button,
@@ -8,21 +9,33 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { login, reset } from "../features/auth/authSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  const authToken = localStorage.getItem("authToken");
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
-    if (authToken) {
-      navigate("/", { replace: true });
+    if (isError) {
+      toast.error(message);
     }
-  }, [authToken, navigate]);
+
+    if (isSuccess || user) {
+      navigate("/");
+    }
+
+    if (isError || isSuccess) {
+      dispatch(reset());
+    }
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -36,13 +49,17 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const userData = {
+      email,
+      password,
+    };
 
-    setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000); // delay the setIsLoading(false) call by one second
+    dispatch(login(userData));
   };
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
 
   return (
     <Box display="flex" justifyContent="center" p={2}>
@@ -64,7 +81,6 @@ const Login = () => {
                 required
                 fullWidth
                 margin="normal"
-                disabled={isLoading}
               />
             </Grid>
             <Grid item xs={12}>
@@ -77,22 +93,17 @@ const Login = () => {
                 required
                 fullWidth
                 margin="normal"
-                disabled={isLoading}
               />
             </Grid>
             <Grid item xs={12}>
-              {isLoading ? (
-                <CircularProgress color="primary" size={40} />
-              ) : (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  fullWidth
-                >
-                  Login
-                </Button>
-              )}
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                fullWidth
+              >
+                Login
+              </Button>
             </Grid>
           </Grid>
         </form>

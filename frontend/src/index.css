@@ -21,3 +21,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.header-toolbar {
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .header-toolbar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .header-toolbar button:not(:last-child) {
+    margin-bottom: 16px;
+  }
+}
