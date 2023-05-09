@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+
 import { Outlet, Navigate } from "react-router-dom";
 import {
   Box,
@@ -11,37 +11,8 @@ import {
   TableRow,
 } from "@mui/material";
 
-import axios from "axios";
-
 const Dashboard = () => {
   const [schedule, setSchedule] = useState({});
-  const { user } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    const authToken = localStorage.getItem("authToken");
-
-    if (!authToken) {
-      return <Navigate to="/login" replace />;
-    }
-
-    const fetchSchedule = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/employees/me/schedule",
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
-        setSchedule(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchSchedule();
-  }, []);
 
   const days = [
     "Sunday",

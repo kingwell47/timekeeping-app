@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   TextField,
   Button,
@@ -11,26 +11,35 @@ import {
   InputLabel,
   CircularProgress,
 } from "@mui/material";
-import { registerUser } from "../actions/userActions";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { register, reset } from "../features/auth/authSlice";
 
 function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
   const [role, setRole] = useState("employee");
-  const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
-  const { user, error } = useSelector((state) => state.user);
-  const navigate = useNavigate();
 
-  const authToken = localStorage.getItem("authToken");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
-    if (authToken) {
-      navigate("/", { replace: true });
+    if (isError) {
+      toast.error(message);
     }
-  }, [authToken, navigate]);
+
+    if (isSuccess || user) {
+      navigate("/");
+    }
+
+    dispatch(reset);
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -41,6 +50,8 @@ function Register() {
       setEmail(value);
     } else if (name === "password") {
       setPassword(value);
+    } else if (name === "password2") {
+      setPassword2(value);
     } else if (name === "role") {
       setRole(value);
     }
@@ -49,41 +60,23 @@ function Register() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    setIsLoading(true);
+    if (password !== password2) {
+      toast.error("Passwords do not match");
+    } else {
+      const userData = {
+        name,
+        email,
+        password,
+        role,
+      };
 
-    const userData = {
-      name,
-      email,
-      password,
-      role,
-    };
-
-    dispatch(registerUser(userData));
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000); // delay the setIsLoading(false) call by one second
+      dispatch(register(userData));
+    }
   };
 
-  useEffect(() => {
-    if (user) {
-      setName("");
-      setEmail("");
-      setPassword("");
-      setRole("employee");
-
-      // Redirect to login page upon successful registration
-      setTimeout(() => {
-        navigate("/");
-      }, 500);
-    }
-  }, [user, navigate]);
-
-  useEffect(() => {
-    return () => {
-      dispatch({ type: "CLEAR_ERRORS" });
-    };
-  }, [dispatch]);
+  if (isLoading) {
+    return <CircularProgress />;
+  }
 
   return (
     <Box display="flex" justifyContent="center" p={2}>
@@ -104,7 +97,6 @@ function Register() {
                 required
                 fullWidth
                 margin="normal"
-                disabled={isLoading}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -117,7 +109,6 @@ function Register() {
                 required
                 fullWidth
                 margin="normal"
-                disabled={isLoading}
               />
             </Grid>
             <Grid item xs={12}>
@@ -130,7 +121,18 @@ function Register() {
                 required
                 fullWidth
                 margin="normal"
-                disabled={isLoading}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Confirm Password"
+                name="password2"
+                type="password"
+                value={password2}
+                onChange={handleChange}
+                required
+                fullWidth
+                margin="normal"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -142,40 +144,21 @@ function Register() {
                 onChange={handleChange}
                 required
                 fullWidth
-                disabled={isLoading}
               >
                 <MenuItem value="employee">Employee</MenuItem>
                 <MenuItem value="hr">HR</MenuItem>
               </Select>
             </Grid>
             <Grid item xs={12} sm={6}>
-              {isLoading ? (
-                <CircularProgress color="primary" size={40} />
-              ) : (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  fullWidth
-                >
-                  Register
-                </Button>
-              )}
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                fullWidth
+              >
+                Register
+              </Button>
             </Grid>
-            {error && (
-              <Grid item xs={12}>
-                <Typography variant="body1" color="error">
-                  {error}
-                </Typography>
-              </Grid>
-            )}
-            {user && (
-              <Grid item xs={12}>
-                <Typography variant="body1" color="success">
-                  Registration successful!
-                </Typography>
-              </Grid>
-            )}
           </Grid>
         </form>
       </Box>

@@ -2,6 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { Container } from "@mui/material";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -19,6 +21,7 @@ function App() {
           </Routes>
         </Container>
       </Router>
+      <ToastContainer />
     </>
   );
 }

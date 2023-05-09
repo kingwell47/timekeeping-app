@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
   TextField,
   Button,
@@ -8,14 +7,12 @@ import {
   Box,
   CircularProgress,
 } from "@mui/material";
-import { loginUser } from "../actions/userActions";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
-  const { user, error } = useSelector((state) => state.user);
+
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,29 +39,10 @@ const Login = () => {
 
     setIsLoading(true);
 
-    const userData = {
-      email,
-      password,
-    };
-
-    dispatch(loginUser(userData));
-
     setTimeout(() => {
       setIsLoading(false);
     }, 1000); // delay the setIsLoading(false) call by one second
   };
-
-  useEffect(() => {
-    if (user) {
-      setEmail("");
-      setPassword("");
-
-      // Redirect to dashboard page upon successful login
-      setTimeout(() => {
-        navigate("/");
-      }, 500);
-    }
-  }, [user, navigate]);
 
   return (
     <Box display="flex" justifyContent="center" p={2}>
@@ -116,13 +94,6 @@ const Login = () => {
                 </Button>
               )}
             </Grid>
-            {error && (
-              <Grid item xs={12}>
-                <Typography variant="body1" color="error">
-                  {error}
-                </Typography>
-              </Grid>
-            )}
           </Grid>
         </form>
       </Box>
