@@ -1,20 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  CircularProgress,
-} from "@mui/material";
+import { Typography, CircularProgress } from "@mui/material";
 import { getCurrentEmployee, reset } from "../features/employee/employeeSlice";
+import Schedule from "../components/Schedule";
+import Timesheet from "../components/TimeSheet";
+import ClockInOutButton from "../components/ClockInOutButton";
 
 const Dashboard = () => {
-  const [schedule, setSchedule] = useState({});
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -45,18 +38,16 @@ const Dashboard = () => {
     }
   }, [currentEmployee]);
 
-  const { name, position, currentSchedule, leaves, overtime, timesheet } =
-    userData;
-
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
+  const {
+    name,
+    position,
+    currentSchedule,
+    leaves,
+    overtime,
+    timesheet,
+    clockedIn,
+    lastClockInTime,
+  } = userData;
 
   if (isLoading) {
     return <CircularProgress />;
@@ -64,38 +55,12 @@ const Dashboard = () => {
 
   return (
     <>
-      <Box display="flex" flexDirection="column" alignItems="center" p={2}>
-        <Typography variant="h5" align="center" gutterBottom>
-          {name} Schedule
-        </Typography>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Day</TableCell>
-              <TableCell>In</TableCell>
-              <TableCell>Out</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {days.map((day) => (
-              <TableRow key={day}>
-                <TableCell>{day}</TableCell>
-                {currentSchedule[day] ? (
-                  <>
-                    <TableCell>{currentSchedule[day].In}</TableCell>
-                    <TableCell>{currentSchedule[day].Out}</TableCell>
-                  </>
-                ) : (
-                  <>
-                    <TableCell>-</TableCell>
-                    <TableCell>-</TableCell>
-                  </>
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Box>
+      <Typography variant="h4" align="center" mt={2}>
+        {name}
+      </Typography>
+      <ClockInOutButton {...{ clockedIn, lastClockInTime }} />
+      <Schedule name={name} schedule={currentSchedule} />
+      <Timesheet timesheet={timesheet} />
     </>
   );
 };

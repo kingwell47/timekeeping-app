@@ -162,18 +162,22 @@ const clockInOut = asyncHandler(async (req, res) => {
     // If the employee has an existing timesheet for the current date with no clock-out time, update it with the current time as the clock-out time
     timesheet.timeOut = new Date();
     await employee.save();
-    res.status(200).json({ message: "Clocked out successfully" });
+    res
+      .status(200)
+      .json({ message: "Clocked out successfully", isClockedIn: false });
   } else if (timesheet && timesheet.timeIn && timesheet.timeOut) {
     // If the employee has an existing timesheet for the current date with both clock-in and clock-out time, return an error
     res.status(400).json({
       message:
         "You have already clocked in and out today. Please contact your supervisor if you need to adjust your timesheet.",
+      isClockedIn: false,
     });
   } else if (timesheet && timesheet.timeIn && !timesheet.timeOut) {
     // If the employee has an existing timesheet for the current date with a clock-in time and no clock-out time, they are still logged in
     res.status(400).json({
       message:
         "You are already clocked in. Please clock out before attempting to clock in again.",
+      isClockedIn: true,
     });
   } else {
     // If the employee does not have an existing timesheet for the current date, create a new timesheet record with the current time as the clock-in time
@@ -183,7 +187,9 @@ const clockInOut = asyncHandler(async (req, res) => {
     });
     employee.timesheet.push(timesheet);
     await employee.save();
-    res.status(200).json({ message: "Clocked in successfully" });
+    res
+      .status(200)
+      .json({ message: "Clocked in successfully", isClockedIn: true });
   }
 });
 
@@ -323,15 +329,8 @@ const getOvertime = asyncHandler(async (req, res) => {
 // @access Private
 const getEmployeeData = asyncHandler(async (req, res) => {
   const employee = await Employee.findOne({ user: req.user._id })
-    .populate({
-      path: "leaves",
-      options: { sort: { date: -1 } },
-    })
-    .populate({
-      path: "overtime",
-      options: { sort: { date: -1 } },
-    });
-
+    .populate("leaves")
+    .populate("overtime");
   if (!employee) {
     res.status(400);
     throw new Error("Employee not found");
@@ -340,14 +339,24 @@ const getEmployeeData = asyncHandler(async (req, res) => {
   const { name, position, currentSchedule, leaves, overtime, timesheet } =
     employee;
 
-  res.status(200).json({
+  const currentDate = new Date().toISOString().slice(0, 10);
+  const currentTimesheet = timesheet.find((ts) => ts.date === currentDate);
+  const clockedIn =
+    currentTimesheet && currentTimesheet.timeIn && !currentTimesheet.timeOut;
+  const lastClockInTime = currentTimesheet ? currentTimesheet.timeIn : null;
+
+  const data = {
     name,
     position,
     currentSchedule,
     leaves,
     overtime,
     timesheet,
-  });
+    clockedIn,
+    lastClockInTime,
+  };
+
+  res.status(200).json(data);
 });
 
 module.exports = {
