@@ -7,7 +7,6 @@ import Schedule from "../components/Schedule";
 import Timesheet from "../components/TimeSheet";
 import ClockInOutButton from "../components/ClockInOutButton";
 import Profile from "../components/Profile";
-import LeavesOT from "../components/LeavesOT";
 
 const Dashboard = () => {
   const [userData, setUserData] = useState({});

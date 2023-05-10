@@ -19,10 +19,6 @@ const Timesheet = ({ timesheet }) => {
     return moment.tz(time, "UTC").tz(moment.tz.guess()).format("h:mm A");
   };
 
-  const formatDayOfWeek = (date) => {
-    return moment(date, "MM-DD-YYYY").format("ddd");
-  };
-
   if (!timesheet) {
     return <CircularProgress />;
   }
