@@ -4,4 +4,5 @@ import employeeReducer from "../features/employee/employeeSlice";
 
 export const store = configureStore({
   reducer: { auth: authReducer, employee: employeeReducer },
+  devTools: false,
 });
