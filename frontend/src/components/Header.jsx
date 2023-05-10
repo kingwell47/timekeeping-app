@@ -1,18 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Box,
-  IconButton,
-  Menu,
-  MenuItem,
-  ListItemText,
-} from "@mui/material";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { unwrapResult } from "@reduxjs/toolkit";
-import MenuIcon from "@mui/icons-material/Menu";
 import { useSelector, useDispatch } from "react-redux";
 
 import { logout, reset } from "../features/auth/authSlice";
@@ -45,18 +34,19 @@ function Header() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ marginBottom: 2 }}>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Time App
         </Typography>
-
         {user ? (
           <>
             <Button color="inherit" onClick={() => handleClick()}>
               Dashboard
             </Button>
-            <Button color="inherit">Profile</Button>
+            <Button color="inherit" onClick={() => handleClick("leaves")}>
+              Leaves
+            </Button>
             <Button color="inherit" onClick={handleLogout}>
               Logout
             </Button>

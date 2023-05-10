@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Box, Typography, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import { toast } from "react-toastify";
 import moment from "moment-timezone";
 
@@ -49,10 +56,13 @@ const ClockInOutButton = ({ clockedIn, lastClockInTime }) => {
   }
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" p={2}>
-      <Box>
+    <Card>
+      <CardContent>
+        <Typography variant="h6" align="center" gutterBottom>
+          Clock In/Out
+        </Typography>
         <Typography variant="body1" align="center" gutterBottom>
-          {isClockedIn
+          {clockedInStatus
             ? "You are currently clocked in."
             : "You are currently clocked out."}
         </Typography>
@@ -66,8 +76,8 @@ const ClockInOutButton = ({ clockedIn, lastClockInTime }) => {
             {clockedInStatus ? "Clock Out" : "Clock In"}
           </Button>
         </Box>
-      </Box>
-    </Box>
+      </CardContent>
+    </Card>
   );
 };
 

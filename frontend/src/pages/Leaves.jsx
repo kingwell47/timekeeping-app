@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import AddLeave from "../components/AddLeave";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Box, CircularProgress } from "@mui/material";
 import { getCurrentEmployee, reset } from "../features/employee/employeeSlice";
-import Schedule from "../components/Schedule";
-import Timesheet from "../components/TimeSheet";
-import ClockInOutButton from "../components/ClockInOutButton";
-import Profile from "../components/Profile";
+import { Box, CircularProgress } from "@mui/material";
 import LeavesOT from "../components/LeavesOT";
+import AddOvertime from "../components/AddOvertime";
 
-const Dashboard = () => {
+const Leaves = () => {
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -40,16 +38,7 @@ const Dashboard = () => {
     }
   }, [currentEmployee]);
 
-  const {
-    name,
-    position,
-    currentSchedule,
-    leaves,
-    overtime,
-    timesheet,
-    clockedIn,
-    lastClockInTime,
-  } = userData;
+  const { leaves, overtime } = userData;
 
   if (isLoading) {
     return <CircularProgress />;
@@ -57,16 +46,17 @@ const Dashboard = () => {
 
   return (
     <Box display="flex" flexDirection={{ xs: "column", md: "row" }}>
-      <Box mr={{ md: 2 }}>
-        <Profile {...{ name, position, leaves, overtime }} />
-        <ClockInOutButton {...{ clockedIn, lastClockInTime }} />
+      <Box mr={{ md: 2 }} minWidth={300}>
+        <AddLeave />
       </Box>
-      <Box flexGrow={1} mr={{ md: 2 }} minWidth={300}>
-        <Schedule name={name} schedule={currentSchedule} />
-        <Timesheet timesheet={timesheet} />
+      <Box mr={{ md: 2 }} minWidth={300}>
+        <AddOvertime />
+      </Box>
+      <Box flexGrow={1} minWidth={300}>
+        <LeavesOT {...{ leaves, overtime }} />
       </Box>
     </Box>
   );
 };
 
-export default Dashboard;
+export default Leaves;
